@@ -11,4 +11,4 @@ This is a simple web application that predicts diabetes progression using Machin
 ## 🛠 Installation
 ### Clone the repository:
 ```bash
-git clone https://github.com/yourusername/Diabetes-Prediction-WebApp.git
+git clone https://github.com/Sonalijha1/Diabetes-Prediction-WebApp.git
