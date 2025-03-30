@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Diabetes Prediction</h2>
+    <form id="predictionForm">
+        <input type="number" id="age" placeholder="Age">
+        <input type="number" id="sex" placeholder="Sex (0 for Female, 1 for Male)">
+        <input type="number" id="bmi" placeholder="Body Mass Index (BMI)">
+        <input type="number" id="bp" placeholder="Blood Pressure">
+        <input type="number" id="s1" placeholder="Serum Measurement 1">
+        <input type="number" id="s2" placeholder="Serum Measurement 2">
+        <input type="number" id="s3" placeholder="Serum Measurement 3">
+        <input type="number" id="s4" placeholder="Serum Measurement 4">
+        <input type="number" id="s5" placeholder="Serum Measurement 5">
+        <input type="number" id="s6" placeholder="Serum Measurement 6">
+        <button type="submit">Predict</button>
+    </form>
+    <h3 id="result"></h3>
+
+    <script>
+        document.getElementById("predictionForm").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent page reload
+
+    // Collect input values
+    let features = [
+        parseFloat(document.getElementById("age").value),
+        parseFloat(document.getElementById("sex").value),
+        parseFloat(document.getElementById("bmi").value),
+        parseFloat(document.getElementById("bp").value),
+        parseFloat(document.getElementById("s1").value),
+        parseFloat(document.getElementById("s2").value),
+        parseFloat(document.getElementById("s3").value),
+        parseFloat(document.getElementById("s4").value),
+        parseFloat(document.getElementById("s5").value),
+        parseFloat(document.getElementById("s6").value)
+    ];
+
+    try {
+        // Send data to Flask API
+        let response = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ features: features })
+        });
+
+        let result = await response.json();
+
+        if (result.error) {
+            document.getElementById("result").innerHTML = `<span style="color: red;">Error: ${result.error}</span>`;
+        } else {
+            document.getElementById("result").innerHTML = `
+                <strong>Prediction:</strong> ${result.prediction.toFixed(2)} <br>
+                <strong>Condition:</strong> ${result.category}
+            `;
+        }
+    } catch (error) {
+        document.getElementById("result").innerHTML = `<span style="color: red;">Error: Could not connect to the server</span>`;
+    }
+});
+
+    </script>
+</body>
+</html>
